@@ -1,0 +1,38 @@
+import board
+import busio
+import digitalio
+import os
+import adafruit_sdcard
+import storage
+import adafruit_lsm6ds.lsm6ds33
+import microcontroller
+import time
+
+#Initialisierung der SD Karte
+spi = busio.SPI(board.SCK, MOSI=board.MOSI, MISO=board.MISO)
+#use a digitalio pin 10 for breakout wiring:
+cs = digitalio.DigitalInOut(board.D10)
+sdcard = adafruit_sdcard.SDCard(spi, cs)
+vfs = storage.VfsFat(sdcard)
+storage.mount(vfs, "/sd")
+
+led = digitalio.DigitalInOut(board.BLUE_LED)
+led.direction = digitalio.Direction.OUTPUT
+
+i2c = board.I2C()
+lsm6ds33 = adafruit_lsm6ds.lsm6ds33.LSM6DS33(i2c)
+
+print("Acceleration: {:.2f} {:.2f} {:.2f} m/s^2".format(*lsm6ds33.acceleration))
+
+
+print("Logging temperature to filesystem")
+# append to the file!
+while True:
+    # open file for append
+    with open("/sd/temperature.txt", "a") as f:
+        led.value = True  # turn on LED to indicate we're writing to the file
+        print("Acceleration: {:.2f} {:.2f} {:.2f} m/s^2".format(*lsm6ds33.acceleration))
+        f.write("Acceleration: {:.2f} {:.2f} {:.2f} m/s^2".format(*lsm6ds33.acceleration))
+        led.value = False  # turn off LED to indicate we're done
+    # file is saved
+    time.sleep(1)
