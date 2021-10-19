@@ -1,0 +1,64 @@
+import board
+import busio
+import digitalio
+import os
+import adafruit_sdcard
+import storage
+import adafruit_lsm6ds.lsm6ds33
+import microcontroller
+import time
+import neopixel
+
+#Initialisierung der SD Karte
+spi = busio.SPI(board.SCK, MOSI=board.MOSI, MISO=board.MISO)
+#use a digitalio pin 10 for breakout wiring:
+cs = digitalio.DigitalInOut(board.D10)
+sdcard = adafruit_sdcard.SDCard(spi, cs)
+vfs = storage.VfsFat(sdcard)
+storage.mount(vfs, "/sd")
+
+led = digitalio.DigitalInOut(board.BLUE_LED)
+led.direction = digitalio.Direction.OUTPUT
+
+i2c = board.I2C()
+lsm6ds33 = adafruit_lsm6ds.lsm6ds33.LSM6DS33(i2c)
+
+neo = neopixel.NeoPixel(board.NEOPIXEL, 1)
+neo.brightness = 0.3
+
+button=digitalio.DigitalInOut(board.SWITCH)
+button.direction = digitalio.Direction.INPUT
+button.pull = digitalio.Pull.UP
+status=1
+altbutton=0
+
+print("Acceleration: {:.2f} {:.2f} {:.2f} m/s^2".format(*lsm6ds33.acceleration))
+
+
+print("Logging acceleration to filesystem")
+# append to the file!
+while True:
+    if button.value!=altbutton:
+        status+=1
+    else:
+        status=status
+
+    if status/2 %2==0:
+        neo[0] = (0, 255, 0)
+        # open file for append
+        with open("/sd/acceleration.csv", "a") as f:
+            led.value = True  # turn on LED to indicate we're writing to the file
+            print("{},{:.2f},{:.2f},{:.2f}\n".format(time.monotonic(),*lsm6ds33.acceleration))
+            f.write("{},{:.2f},{:.2f},{:.2f}\n".format(time.monotonic(),*lsm6ds33.acceleration))
+            led.value = False  # turn off LED to indicate we're done
+        # file is saved       
+        
+    else:
+        neo[0] = (255, 0, 0)
+
+
+    altbutton=button.value
+    print(button.value)
+    print(status)
+    time.sleep(0.1)
+    
