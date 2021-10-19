@@ -1,0 +1,25 @@
+import board
+import busio
+import digitalio
+import os
+spi = busio.SPI(board.SCK, MOSI=board.MOSI, MISO=board.MISO)
+#use a digitalio pin 10 for breakout wiring:
+cs = digitalio.DigitalInOut(board.D10)
+import adafruit_sdcard
+import storage
+sdcard = adafruit_sdcard.SDCard(spi, cs)
+vfs = storage.VfsFat(sdcard)
+storage.mount(vfs, "/sd")
+
+print(os.listdir())
+
+with open("/sd/test3.txt", "w") as f:
+    f.write("Hello world!\r\n")
+print("test3")    
+
+with open("/sd/test3.txt", "r") as f:
+    print("Printing lines in file:")
+    line = f.readline()
+    while line != '':
+        print(line)
+        line = f.readline()
