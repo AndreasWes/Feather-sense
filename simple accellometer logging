@@ -29,10 +29,10 @@ print("Logging temperature to filesystem")
 # append to the file!
 while True:
     # open file for append
-    with open("/sd/temperature.txt", "a") as f:
+    with open("/sd/acceleration.csv", "a") as f:
         led.value = True  # turn on LED to indicate we're writing to the file
-        print("Acceleration: {:.2f} {:.2f} {:.2f} m/s^2".format(*lsm6ds33.acceleration))
-        f.write("Acceleration: {:.2f} {:.2f} {:.2f} m/s^2".format(*lsm6ds33.acceleration))
+        print("{:.2f},{:.2f},{:.2f} m/s^2".format(*lsm6ds33.acceleration))
+        f.write("{},{:.2f},{:.2f},{:.2f}\n".format(time.monotonic(),*lsm6ds33.acceleration))
         led.value = False  # turn off LED to indicate we're done
     # file is saved
     time.sleep(1)
