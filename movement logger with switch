@@ -55,10 +55,10 @@ print("Logging temperature to filesystem")
 
 
 with open("/sd/datalogging.csv", "a") as f:
-            
+
             led.value = True  # turn on LED to indicate we're writing to the file
             print("The date is %s %d/%d/%d" % (days[t.tm_wday], t.tm_mday, t.tm_mon, t.tm_year))
-            f.write("date %s %d/%d/%d\n time %d:%02d:%02d \n timestamp, temperature, pressure, magnetic x,magnetic y, magnetic z, accel x, accel y, accel z, gyro x, gyro y, gyro z, humidity \n s,°C,hPa,uTesla,uTesla,uTesla,m/s^2,m/s^2,m/s^2,deg/s,deg/s,deg/s,pecent \n" % (days[t.tm_wday], t.tm_mday, t.tm_mon, t.tm_year,t.tm_hour, t.tm_min, t.tm_sec))
+            f.write("date %s %d/%d/%d\n time %d:%02d:%02d \n timestamp, temperature,pressure, magnetic x,magnetic y,magnetic z,accel x,accel y,accel z, gyro x, gyro y, gyro z, humidity \n s,deg C,hPa,uTesla,uTesla,uTesla,m/s^2,m/s^2,m/s^2,deg/s,deg/s,deg/s,pecent \n" % (days[t.tm_wday], t.tm_mday, t.tm_mon, t.tm_year,t.tm_hour, t.tm_min, t.tm_sec))
             print("date %s %d/%d/%d\n time %d:%02d:%02d \n" % (days[t.tm_wday], t.tm_mday, t.tm_mon, t.tm_year,t.tm_hour, t.tm_min, t.tm_sec))
             led.value = False  # turn off LED to indicate we're done
         # file is saved
@@ -73,7 +73,7 @@ while True:
     if status/2 %2==0:
         neo[0] = (0, 255, 0)
         # open file for append
-        with open("/sd/acceleration.csv", "a") as f:
+        with open("/sd/datalogging.csv", "a") as f:
             led.value = True  # turn on LED to indicate we're writing to the file
             print("{},{:.1f},{},{:.3f},{:.3f},{:.3f},{:.2f},{:.2f},{:.2f},{:.2f},{:.2f},{:.2f},{:.1f} \n".format(time.monotonic(),bmp280.temperature,bmp280.pressure,lis3mdl.magnetic[0],lis3mdl.magnetic[1],lis3mdl.magnetic[2],lsm6ds33.acceleration[0],lsm6ds33.acceleration[1],lsm6ds33.acceleration[2],lsm6ds33.gyro[0],lsm6ds33.gyro[1],lsm6ds33.gyro[2],sht31d.relative_humidity))
             f.write("{},{:.1f},{},{:.3f},{:.3f},{:.3f},{:.2f},{:.2f},{:.2f},{:.2f},{:.2f},{:.2f},{:.1f} \n".format(time.monotonic(),bmp280.temperature,bmp280.pressure,lis3mdl.magnetic[0],lis3mdl.magnetic[1],lis3mdl.magnetic[2],lsm6ds33.acceleration[0],lsm6ds33.acceleration[1],lsm6ds33.acceleration[2],lsm6ds33.gyro[0],lsm6ds33.gyro[1],lsm6ds33.gyro[2],sht31d.relative_humidity))
@@ -86,5 +86,5 @@ while True:
     altbutton=button.value
     print(button.value)
     print(status)
-    time.sleep(0.1)
+    time.sleep(0.01)
 
