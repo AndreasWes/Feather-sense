@@ -65,6 +65,7 @@ while True:
     #Knopfdruck "halten" 
     if button.value!=altbutton:
         status+=1
+        altbutton=button.value
     else:
         status=status
     #falls der Knopf gedrückt wurde diese Schleife ausführen
@@ -76,11 +77,9 @@ while True:
             f.write("{},{:.1f},{},{:.3f},{:.3f},{:.3f},{:.2f},{:.2f},{:.2f},{:.2f},{:.2f},{:.2f},{:.1f} \n".format(time.monotonic(),bmp280.temperature,bmp280.pressure,lis3mdl.magnetic[0],lis3mdl.magnetic[1],lis3mdl.magnetic[2],lsm6ds33.acceleration[0],lsm6ds33.acceleration[1],lsm6ds33.acceleration[2],lsm6ds33.gyro[0],lsm6ds33.gyro[1],lsm6ds33.gyro[2],sht31d.relative_humidity))
             led.value = False  # turn off LED to indicate we're done
         # file is saved
-        time.sleep(0.05)
+        time.sleep(0.01)
     else:
         neo[0] = (255, 0, 0) #red light when data logging is inactive
         time.sleep(0.1)
-    altbutton=button.value
 
-    
 
