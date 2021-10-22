@@ -25,7 +25,6 @@ rtc = adafruit_pcf8523.PCF8523(i2c)
 days = ("Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday")
 t = rtc.datetime
 
-
 #Initialisierung der SD Karte
 spi = busio.SPI(board.SCK, MOSI=board.MOSI, MISO=board.MISO)
 #use a digitalio pin 10 for breakout wiring:
@@ -53,12 +52,11 @@ altbutton=0
 
 #Initiales öffnen der Datei bei Start des Loggers
 with open("/sd/datalogging.csv", "a") as f:
-
-            led.value = True  # turn on LED to indicate we're writing to the file
-            f.write("date %s %d/%d/%d\n time %d:%02d:%02d \n timestamp, temperature,pressure, magnetic x,magnetic y,magnetic z,accel x,accel y,accel z, gyro x, gyro y, gyro z, humidity \n s,deg C,hPa,uTesla,uTesla,uTesla,m/s^2,m/s^2,m/s^2,deg/s,deg/s,deg/s,pecent \n" % (days[t.tm_wday], t.tm_mday, t.tm_mon, t.tm_year,t.tm_hour, t.tm_min, t.tm_sec))
-            print("date %s %d/%d/%d\n time %d:%02d:%02d \n" % (days[t.tm_wday], t.tm_mday, t.tm_mon, t.tm_year,t.tm_hour, t.tm_min, t.tm_sec))
-            led.value = False  # turn off LED to indicate we're done
-        # file is saved
+    led.value = True  # turn on LED to indicate we're writing to the file
+    f.write("date %s %d/%d/%d\n time %d:%02d:%02d \n timestamp, temperature,pressure, magnetic x,magnetic y,magnetic z,accel x,accel y,accel z, gyro x, gyro y, gyro z, humidity \n s,deg C,hPa,uTesla,uTesla,uTesla,m/s^2,m/s^2,m/s^2,deg/s,deg/s,deg/s,pecent \n" % (days[t.tm_wday], t.tm_mday, t.tm_mon, t.tm_year,t.tm_hour, t.tm_min, t.tm_sec))
+    print("date %s %d/%d/%d\n time %d:%02d:%02d \n" % (days[t.tm_wday], t.tm_mday, t.tm_mon, t.tm_year,t.tm_hour, t.tm_min, t.tm_sec))
+    led.value = False  # turn off LED to indicate we're done
+    # file is saved
 
 #Whileshleife um Daten abzurufen wenn Knopf gedrückt wurde
 while True:   
@@ -81,5 +79,3 @@ while True:
     else:
         neo[0] = (255, 0, 0) #red light when data logging is inactive
         time.sleep(0.1)
-
-
