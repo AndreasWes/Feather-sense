@@ -73,7 +73,7 @@ while True:
         altbutton=button.value
     #falls der Knopf gedrückt wurde diese Schleife ausführen
     if status:
-        
+
         neo[0] = (0, 255, 0) #green light when data logging is active
         # open file for append
         temperature="{:.1f}".format(bmp280.temperature)
@@ -83,7 +83,7 @@ while True:
         humidity="{:.1f}".format(sht31d.relative_humidity)
         data03="{},{},{},{:.3f},{:.3f},{:.3f},{:.2f},{:.2f},{:.2f},{:.2f},{:.2f},{:.2f},{} \n".format(time.monotonic(),temperature,pressure,lis3mdl.magnetic[0],lis3mdl.magnetic[1],lis3mdl.magnetic[2],lsm6ds33.acceleration[0],lsm6ds33.acceleration[1],lsm6ds33.acceleration[2],lsm6ds33.gyro[0],lsm6ds33.gyro[1],lsm6ds33.gyro[2],humidity)
 
-        
+
         with open("/sd/datalogging.csv", "a") as f:
             led.value = True  # turn on LED to indicate we're writing to the file
             f.write(data01)
@@ -91,13 +91,12 @@ while True:
             f.write(data03)
             led.value = False  # turn off LED to indicate we're done
         # file is saved
-        
+
     else:
         neo[0] = (255, 0, 0) #red light when data logging is inactive
     timing2=time.monotonic()
+
     if timing2-timing1>=0.3:
-        timing3=0.01
         print("Abtastrate=",1/(3*(timing2-timing1)),"Hz")
     else:
-        pass
-    time.sleep(0.3+timing1-timing2)
+        time.sleep(0.3+timing1-timing2)
