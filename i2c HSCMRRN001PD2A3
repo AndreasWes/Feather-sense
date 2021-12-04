@@ -1,0 +1,32 @@
+import board
+import busio
+
+#i2c Anschlüsse definieren
+i2c = busio.I2C(board.SCL, board.SDA)
+#locking I2c so i am able to use it 
+while not i2c.try_lock():
+    pass
+#printing all I2C adresses in hexadecimal 
+print([hex(x)for x in i2c.scan()])
+
+
+#i2c.writeto(0x28, bytes([0x01]), stop=False)
+
+#number of bytearrays to be read
+n=2
+#reading the Sensor 
+result = bytearray(2)
+i2c.readfrom_into(0x28, result)
+print(result)
+
+#mergine the bytearrays (first 2 caracters of the first array are not read [3][status])
+def press_d(data):
+   value = data[0] << 8 | data[1]
+   press = (value & 0x3FFF) 
+   return press
+
+pressure_digital=press_d(result)
+#decrypt the pressurereading regarding datasheet [psi!] 
+#https://prod-edam.honeywell.com/content/dam/honeywell-edam/sps/siot/en-us/products/sensors/pressure-sensors/board-mount-pressure-sensors/common/documents/sps-siot-i2c-comms-digital-output-pressure-sensors-tn-008201-3-en-ciid-45841.pdf
+pressure=((pressure_digital-1638)*(1-(-1)))/(14745-1638)+(-1)
+print(pressure)
